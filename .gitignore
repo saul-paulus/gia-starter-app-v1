@@ -1,0 +1,14 @@
+# Binaries
+bin/
+tmp/
+main
+
+# Logs
+logs/*.log
+
+# Environment variables
+.env
+
+# Tool specific
+.air.toml
+build-errors.log

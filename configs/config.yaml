@@ -1,0 +1,4 @@
+app:
+  name: "GIA Starter App"
+  port: 8081
+  env: "development"

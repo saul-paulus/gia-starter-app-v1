@@ -1,2 +1,5 @@
 {"level":"INFO","ts":"2026-03-24T02:08:14.804+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
 {"level":"INFO","ts":"2026-03-24T02:11:57.276+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"INFO","ts":"2026-03-24T02:29:06.122+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"ERROR","ts":"2026-03-24T02:29:06.122+0700","caller":"logger/zap.go:58","msg":"Failed to connect to database"}
+{"level":"ERROR","ts":"2026-03-24T02:29:06.122+0700","caller":"logger/zap.go:58","msg":"Database connection failed, but proceeding..."}
