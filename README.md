@@ -2,6 +2,16 @@
 
 This project is a backend application built using the Go (Golang) programming language with the Gin Gonic framework, following the **Clean Architecture** (or Hexagonal Architecture) pattern. This structure is designed to decouple business logic from technical details (such as frameworks, databases, etc.) to enhance scalability and ease of testing.
 
+### 🚀 Tech Stack
+
+-   **Web Framework**: [Gin Gonic](https://gin-gonic.com/) (High-performance HTTP web framework)
+-   **Configuration**: [Viper](https://github.com/spf13/viper) (Go configuration with fangs)
+-   **Logging**: [Uber Zap](https://github.com/uber-go/zap) (Blazing fast, structured, leveled logging)
+-   **Hot Reloading**: [Air](https://github.com/cosmtrek/air) (Live reload for Go apps)
+-   **API Documentation**: [Swagger](https://github.com/swaggo/swag) (Interactive API documentation)
+-   **Database (ORM)**: [GORM](https://gorm.io/) (Fantastic ORM library for Golang)
+-   **Validation**: [Go Playground Validator](https://github.com/go-playground/validator)
+
 ## Folder Structure
 
 ```text
@@ -67,7 +77,18 @@ This application follows the principle of Separation of Concerns:
 - Go 1.22 or newer
 - Database (depending on the implementation in `infrastructure/database`)
 
-### Running the Application
+### 📚 API Documentation
+
+This project uses **Swagger** (via `swaggo`) to automatically generate and serve interactive API documentation.
+
+-   **Swagger UI**: [http://localhost:8081/swagger/index.html](http://localhost:8081/swagger/index.html)
+
+To regenerate the documentation after adding new annotations, run:
+```bash
+swag init -g cmd/api/main.go
+```
+
+### 🛠️ Running the Application
 
 1.  Prepare the configuration in `configs/config.yaml`.
 2.  Install dependencies:
