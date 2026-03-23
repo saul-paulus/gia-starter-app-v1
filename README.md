@@ -74,7 +74,11 @@ This application follows the principle of Separation of Concerns:
     ```bash
     go mod tidy
     ```
-3.  Run the application:
+3.  Run the application with hot reloading (Recommendation):
+    - Install Air: `go install github.com/air-verse/air@latest`
+    - Run: `air`
+    
+4.  Or run normally:
     ```bash
     go run cmd/api/main.go
     ```
