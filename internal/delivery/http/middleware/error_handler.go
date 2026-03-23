@@ -28,7 +28,7 @@ func ErrorHandler() gin.HandlerFunc {
 			c.AbortWithStatusJSON(appErr.Status, res)
 		} else {
 			res := response.ApiErrorResponse(http.StatusInternalServerError, "An unexpected error occurred", gin.H{
-				"code": "INTERNAL",
+				"code": "INTERNAL_SERVER_ERROR",
 			})
 			c.AbortWithStatusJSON(http.StatusInternalServerError, res)
 		}

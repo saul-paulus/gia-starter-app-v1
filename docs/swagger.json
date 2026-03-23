@@ -1,0 +1,20 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a starter kit for Go Gin Clean Architecture.",
+        "title": "GIA Starter App API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Saul Paulus",
+            "url": "https://github.com/saul-paulus"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8081",
+    "basePath": "/api/v1",
+    "paths": {}
+}

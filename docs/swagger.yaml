@@ -1,0 +1,15 @@
+basePath: /api/v1
+host: localhost:8081
+info:
+  contact:
+    name: Saul Paulus
+    url: https://github.com/saul-paulus
+  description: This is a starter kit for Go Gin Clean Architecture.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: GIA Starter App API
+  version: "1.0"
+paths: {}
+swagger: "2.0"
