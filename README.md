@@ -104,6 +104,44 @@ swag init -g cmd/api/main.go
     go run cmd/api/main.go
     ```
 
+### 🗄️ Database Migrations
+
+This project uses `golang-migrate` for database schema management. You can use `Makefile` commands to simplify the migration process.
+
+#### Basic Commands
+
+| Command | Description |
+| :--- | :--- |
+| `make migrate-up` | Run all pending migrations. |
+| `make migrate-down` | Undo the last migration. |
+| `make migrate-status` | View the current migration version in the database. |
+| `make migrate-create name=xxx` | Create a new migration file pair (up & down). |
+| `make migrate-force version=x` | Force the database to a specific version (for troubleshooting). |
+
+#### Example: Creating a New Table (`users`)
+
+1.  **Generate migration files**:
+    ```bash
+    make migrate-create name=create_users_table
+    ```
+2.  **Define the SQL schema** in the `migrations/` folder (e.g., `00000X_create_users_table.up.sql`):
+    ```sql
+    CREATE TABLE users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+    ```
+3.  **Apply the migration**:
+    ```bash
+    make migrate-up
+    ```
+
+#### Troubleshooting: "no change" error
+If you modify a migration file that has already been executed, use `make migrate-force version=X` (where X is the previous version) and then run `make migrate-up` again.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
