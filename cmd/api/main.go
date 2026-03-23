@@ -17,6 +17,7 @@ package main
 import (
 	"gia-starter-app-V1/internal/delivery/http"
 	"gia-starter-app-V1/internal/infrastructure/config"
+	"gia-starter-app-V1/internal/infrastructure/container"
 	"gia-starter-app-V1/internal/infrastructure/database"
 	"gia-starter-app-V1/internal/infrastructure/logger"
 
@@ -35,15 +36,18 @@ func main() {
 	}
 
 	// Initialize Database
-	_, err = database.InitDB(&cfg.Database)
+	db, err := database.InitDB(&cfg.Database)
 	if err != nil {
-		logger.Error("Database connection failed, but proceeding...")
+		logger.Fatal("Database connection failed")
 	}
+
+	// Initialize Dependency Injection Registry
+	reg := container.NewRegistry(db)
 
 	router := gin.Default()
 
-	// Setup Router
-	http.SetupRouter(router)
+	// Setup Router (pass registry if needed)
+	http.SetupRouter(router, reg)
 
 	router.Run(":8081")
 }

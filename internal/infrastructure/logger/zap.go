@@ -13,12 +13,12 @@ var Log *zap.Logger
 // InitLogger initializes the Zap logger
 func InitLogger() {
 	// Ensure logs directory exists
-	logDir := "logs"
+	logDir := filepath.Join("storage", "logs")
 	if _, err := os.Stat(logDir); os.IsNotExist(err) {
-		_ = os.Mkdir(logDir, 0755)
+		_ = os.MkdirAll(logDir, 0755)
 	}
 
-	logFile := filepath.Join(logDir, "app.log")
+	logFile := filepath.Join(logDir, "gia-starter-app.log")
 
 	// Encoder config
 	encoderConfig := zap.NewProductionEncoderConfig()

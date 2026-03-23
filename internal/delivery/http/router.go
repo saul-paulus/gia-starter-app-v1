@@ -2,6 +2,7 @@ package http
 
 import (
 	_ "gia-starter-app-V1/docs"
+	"gia-starter-app-V1/internal/delivery/http/handler"
 	"gia-starter-app-V1/internal/delivery/http/middleware"
 	"gia-starter-app-V1/internal/shared/errors"
 	"gia-starter-app-V1/pkg/response"
@@ -10,11 +11,13 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	"gia-starter-app-V1/internal/infrastructure/container"
+
 	"github.com/gin-gonic/gin"
 )
 
 // SetupRouter configures all routes, middleware, and special handlers for the application.
-func SetupRouter(r *gin.Engine) {
+func SetupRouter(r *gin.Engine, reg *container.Registry) {
 	// Handle Method Not Allowed
 	r.HandleMethodNotAllowed = true
 
@@ -43,6 +46,17 @@ func SetupRouter(r *gin.Engine) {
 	// API Routes
 	v1 := r.Group("/api/v1")
 	{
+		// User Routes
+		userHandler := handler.NewUserHandler(reg.UserUseCase)
+		users := v1.Group("/users")
+		{
+			users.POST("", userHandler.CreateUser)
+			users.GET("", userHandler.GetAllUsers)
+			users.GET("/:id", userHandler.GetUserByID)
+			users.PUT("/:id", userHandler.UpdateUser)
+			users.DELETE("/:id", userHandler.DeleteUser)
+		}
+
 		// @Summary      Health check
 		// @Description  Check if the application is up and running
 		// @Tags         system
