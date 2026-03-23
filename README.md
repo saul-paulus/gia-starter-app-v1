@@ -106,7 +106,7 @@ swag init -g cmd/api/main.go
 
 ### 🗄️ Database Migrations
 
-This project uses `golang-migrate` for database schema management. You can use `Makefile` commands to simplify the migration process.
+This project uses `sql-migrate` for database schema management, which tracks migrations by their filenames in the database. You can use `Makefile` commands to simplify the process.
 
 #### Basic Commands
 
@@ -114,34 +114,34 @@ This project uses `golang-migrate` for database schema management. You can use `
 | :--- | :--- |
 | `make migrate-up` | Run all pending migrations. |
 | `make migrate-down` | Undo the last migration. |
-| `make migrate-status` | View the current migration version in the database. |
-| `make migrate-create name=xxx` | Create a new migration file pair (up & down). |
-| `make migrate-force version=x` | Force the database to a specific version (for troubleshooting). |
+| `make migrate-status` | View the status of migrations and which files have been applied. |
+| `make migrate-new name=xxx` | Create a new migration file. |
 
 #### Example: Creating a New Table (`users`)
 
-1.  **Generate migration files**:
+1.  **Generate migration file**:
     ```bash
-    make migrate-create name=create_users_table
+    make migrate-new name=create_users_table
     ```
-2.  **Define the SQL schema** in the `migrations/` folder (e.g., `00000X_create_users_table.up.sql`):
+2.  **Define the SQL schema** in the new file under `migrations/`. Use markers for Up and Down:
     ```sql
+    -- +migrate Up
     CREATE TABLE users (
         id SERIAL PRIMARY KEY,
-        username VARCHAR(255) UNIQUE NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        username VARCHAR(255) UNIQUE NOT NULL
     );
+
+    -- +migrate Down
+    DROP TABLE users;
     ```
 3.  **Apply the migration**:
     ```bash
     make migrate-up
     ```
 
-#### Troubleshooting: "no change" error
-If you modify a migration file that has already been executed, use `make migrate-force version=X` (where X is the previous version) and then run `make migrate-up` again.
+#### Benefits of Name-Based Tracking
+Unlike version-only tools, `sql-migrate` stores the filename in the database (table `gorp_migrations`). This makes it easy to audit which specific migration scripts have been executed.
 
-## 📄 License
+### 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

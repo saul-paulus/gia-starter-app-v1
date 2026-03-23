@@ -1,22 +1,15 @@
-include .env
-export
+MIGRATE_BIN=$(HOME)/go/bin/sql-migrate
 
-MIGRATE_BIN=$(HOME)/go/bin/migrate
-DB_URL=postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSLMODE)
-
-.PHONY: migrate-up migrate-down migrate-create migrate-force migrate-status
+.PHONY: migrate-up migrate-down migrate-new migrate-status
 
 migrate-up:
-	@$(MIGRATE_BIN) -path migrations -database "$(DB_URL)" up
+	@$(MIGRATE_BIN) up -config=dbconfig.yml -env=development
 
 migrate-down:
-	@$(MIGRATE_BIN) -path migrations -database "$(DB_URL)" down 1
+	@$(MIGRATE_BIN) down -config=dbconfig.yml -env=development
 
-migrate-create:
-	@$(MIGRATE_BIN) create -ext sql -dir migrations -seq $(name)
-
-migrate-force:
-	@$(MIGRATE_BIN) -path migrations -database "$(DB_URL)" force $(version)
+migrate-new:
+	@$(MIGRATE_BIN) new -config=dbconfig.yml -env=development $(name)
 
 migrate-status:
-	@$(MIGRATE_BIN) -path migrations -database "$(DB_URL)" version
+	@$(MIGRATE_BIN) status -config=dbconfig.yml -env=development

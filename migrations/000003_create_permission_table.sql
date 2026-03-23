@@ -1,6 +1,10 @@
+-- +migrate Up
 CREATE TABLE IF NOT EXISTS tbl_permissions (
     permission_id SERIAL PRIMARY KEY,
     nm_permission VARCHAR(50) UNIQUE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-)
+);
+
+-- +migrate Down
+DROP TABLE IF EXISTS tbl_permissions;
