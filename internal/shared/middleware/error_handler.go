@@ -3,7 +3,7 @@ package middleware
 import (
 	stdErrors "errors"
 	appErrors "gia-starter-app-V1/internal/shared/errors"
-	"gia-starter-app-V1/pkg/response"
+	"gia-starter-app-V1/internal/shared/response"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

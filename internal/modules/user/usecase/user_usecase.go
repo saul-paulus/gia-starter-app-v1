@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
+	"gia-starter-app-V1/internal/modules/user/domain"
 	"gia-starter-app-V1/internal/modules/user/domain/entity"
-	"gia-starter-app-V1/internal/modules/user/domain/repository"
 )
 
 type UserUseCase interface {
@@ -15,10 +15,10 @@ type UserUseCase interface {
 }
 
 type userUseCase struct {
-	userRepo repository.UserRepository
+	userRepo domain.UserRepository
 }
 
-func NewUserUseCase(repo repository.UserRepository) UserUseCase {
+func NewUserUseCase(repo domain.UserRepository) UserUseCase {
 	return &userUseCase{
 		userRepo: repo,
 	}

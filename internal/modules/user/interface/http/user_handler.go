@@ -1,9 +1,9 @@
-package handler
+package http
 
 import (
 	"gia-starter-app-V1/internal/modules/user/domain/entity"
 	"gia-starter-app-V1/internal/modules/user/usecase"
-	"gia-starter-app-V1/pkg/response"
+	"gia-starter-app-V1/internal/shared/response"
 	"net/http"
 	"strconv"
 

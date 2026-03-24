@@ -1,9 +1,9 @@
-package postgres
+package repository
 
 import (
 	"context"
+	"gia-starter-app-V1/internal/modules/user/domain"
 	"gia-starter-app-V1/internal/modules/user/domain/entity"
-	"gia-starter-app-V1/internal/modules/user/domain/repository"
 
 	"gorm.io/gorm"
 )
@@ -12,7 +12,7 @@ type userRepository struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) repository.UserRepository {
+func NewUserRepository(db *gorm.DB) domain.UserRepository {
 	return &userRepository{
 		db: db,
 	}

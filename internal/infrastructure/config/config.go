@@ -3,6 +3,9 @@ package config
 import (
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -29,29 +32,84 @@ type DatabaseConfig struct {
 
 var GlobalConfig *Config
 
+// findFile searches for a file in the current directory and its parent directories.
+// It returns the absolute path to the file if found, otherwise an empty string.
+func findFile(filename string) string {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		log.Printf("Error getting current working directory: %v", err)
+		return ""
+	}
+
+	for {
+		filePath := filepath.Join(currentDir, filename)
+		if _, err := os.Stat(filePath); err == nil {
+			return filePath
+		}
+
+		parentDir := filepath.Dir(currentDir)
+		if parentDir == currentDir { // Reached root directory
+			break
+		}
+		currentDir = parentDir
+	}
+	return ""
+}
+
 // LoadConfig loads the configuration from YAML file and environment variables
 func LoadConfig(configPath string) (*Config, error) {
-	// Read from YAML
-	viper.SetConfigFile(configPath)
+	// 1. Configure Viper for Environment Variables
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
+
+	// 2. Try to find the YAML config file by searching upwards
+	foundConfigPath := findFile(configPath)
+	if foundConfigPath == "" {
+		log.Printf("Warning: could not find config file %s in current or parent directories", configPath)
+		viper.SetConfigFile(configPath) // Fallback to original path
+	} else {
+		viper.SetConfigFile(foundConfigPath)
+		log.Printf("Configuration found at %s", foundConfigPath)
+	}
+
 	if err := viper.ReadInConfig(); err != nil {
 		log.Printf("Warning: error reading config file: %v", err)
 	}
 
-	// Read from .env
-	viper.SetConfigFile(".env")
-	if err := viper.MergeInConfig(); err != nil {
-		log.Printf("Note: .env file not found or could not be read, using defaults/environment variables")
+	// 3. Try to find .env file by searching upwards
+	foundEnvPath := findFile(".env")
+	if foundEnvPath == "" {
+		log.Printf("Note: .env file not found in current or parent directories")
+	} else {
+		viper.SetConfigFile(foundEnvPath)
+		viper.SetConfigType("env") // Explicitly set type to env
+		if err := viper.MergeInConfig(); err != nil {
+			log.Printf("Warning: error merging .env file: %v", err)
+		} else {
+			log.Printf(".env file loaded from %s", foundEnvPath)
+		}
 	}
 
-	viper.AutomaticEnv()
-
-	// Mapping environment variables manually for clarity (optional but good for .env)
-	_ = viper.BindEnv("database.host", "DB_HOST")
-	_ = viper.BindEnv("database.port", "DB_PORT")
-	_ = viper.BindEnv("database.user", "DB_USER")
-	_ = viper.BindEnv("database.password", "DB_PASSWORD")
-	_ = viper.BindEnv("database.dbname", "DB_NAME")
-	_ = viper.BindEnv("database.sslmode", "DB_SSLMODE")
+	// 4. Mapping environment variables manually to ensure Unmarshal picks them up
+	// We use the keys from .env directly
+	if host := viper.GetString("DB_HOST"); host != "" {
+		viper.Set("database.host", host)
+	}
+	if port := viper.GetInt("DB_PORT"); port != 0 {
+		viper.Set("database.port", port)
+	}
+	if user := viper.GetString("DB_USER"); user != "" {
+		viper.Set("database.user", user)
+	}
+	if pass := viper.GetString("DB_PASSWORD"); pass != "" {
+		viper.Set("database.password", pass)
+	}
+	if name := viper.GetString("DB_NAME"); name != "" {
+		viper.Set("database.dbname", name)
+	}
+	if ssl := viper.GetString("DB_SSLMODE"); ssl != "" {
+		viper.Set("database.sslmode", ssl)
+	}
 
 	var config Config
 	if err := viper.Unmarshal(&config); err != nil {
@@ -59,6 +117,5 @@ func LoadConfig(configPath string) (*Config, error) {
 	}
 
 	GlobalConfig = &config
-	log.Printf("Configuration loaded successfully from %s", configPath)
 	return GlobalConfig, nil
 }

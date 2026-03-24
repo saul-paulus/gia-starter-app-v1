@@ -1,0 +1,25 @@
+{"level":"INFO","ts":"2026-03-24T16:32:33.552+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"ERROR","ts":"2026-03-24T16:32:33.553+0700","caller":"logger/zap.go:58","msg":"Failed to connect to database"}
+{"level":"FATAL","ts":"2026-03-24T16:32:33.553+0700","caller":"logger/zap.go:63","msg":"Database connection failed"}
+{"level":"INFO","ts":"2026-03-24T16:35:30.508+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"ERROR","ts":"2026-03-24T16:35:30.508+0700","caller":"logger/zap.go:58","msg":"Failed to connect to database"}
+{"level":"FATAL","ts":"2026-03-24T16:35:30.508+0700","caller":"logger/zap.go:63","msg":"Database connection failed"}
+{"level":"INFO","ts":"2026-03-24T16:35:33.140+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"ERROR","ts":"2026-03-24T16:35:33.140+0700","caller":"logger/zap.go:58","msg":"Failed to connect to database"}
+{"level":"FATAL","ts":"2026-03-24T16:35:33.140+0700","caller":"logger/zap.go:63","msg":"Database connection failed"}
+{"level":"INFO","ts":"2026-03-24T16:36:48.751+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"ERROR","ts":"2026-03-24T16:36:48.752+0700","caller":"logger/zap.go:58","msg":"Failed to connect to database"}
+{"level":"FATAL","ts":"2026-03-24T16:36:48.752+0700","caller":"logger/zap.go:63","msg":"Database connection failed"}
+{"level":"INFO","ts":"2026-03-24T16:37:08.046+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"ERROR","ts":"2026-03-24T16:37:08.046+0700","caller":"logger/zap.go:58","msg":"Failed to connect to database"}
+{"level":"FATAL","ts":"2026-03-24T16:37:08.046+0700","caller":"logger/zap.go:63","msg":"Database connection failed"}
+{"level":"INFO","ts":"2026-03-24T16:37:23.319+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"ERROR","ts":"2026-03-24T16:37:23.319+0700","caller":"logger/zap.go:58","msg":"Failed to connect to database"}
+{"level":"FATAL","ts":"2026-03-24T16:37:23.319+0700","caller":"logger/zap.go:63","msg":"Database connection failed"}
+{"level":"INFO","ts":"2026-03-24T16:38:06.988+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"ERROR","ts":"2026-03-24T16:38:06.989+0700","caller":"logger/zap.go:58","msg":"Failed to connect to database"}
+{"level":"FATAL","ts":"2026-03-24T16:38:06.989+0700","caller":"logger/zap.go:63","msg":"Database connection failed"}
+{"level":"INFO","ts":"2026-03-24T16:38:29.615+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"INFO","ts":"2026-03-24T16:38:29.618+0700","caller":"logger/zap.go:48","msg":"Database connection established successfully"}
+{"level":"INFO","ts":"2026-03-24T16:39:56.554+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
+{"level":"INFO","ts":"2026-03-24T16:39:56.557+0700","caller":"logger/zap.go:48","msg":"Database connection established successfully"}
