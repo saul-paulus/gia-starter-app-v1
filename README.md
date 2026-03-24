@@ -19,6 +19,7 @@ A professional-grade backend starter kit built with **Golang 1.25** and the **Gi
 - [🔌 API Documentation](#-api-documentation)
 - [🧪 Testing](#-testing)
 - [📜 Makefile Commands](#-makefile-commands)
+- [🛠️ CLI Generator](#️-cli-generator)
 - [🐳 Docker](#-docker)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
@@ -150,6 +151,38 @@ The included `Makefile` simplifies common maintenance and development tasks.
 | `make migrate-up`           | Apply all available 'up' migrations.             |
 | `make migrate-down`         | Roll back the most recent migration.             |
 | `make migrate-new name=...` | Scaffold a new migration file with a timestamp.  |
+| `make make-module name=...` | Scaffold a new module using the CLI generator.   |
+
+---
+
+## 🛠️ CLI Module Generator (Artisan Style)
+
+This starter kit includes a powerful CLI tool to scaffold new modules quickly, ensuring architectural consistency across your project.
+
+### Usage
+
+To generate a new module (e.g., `product`), run:
+```bash
+make make-module name=product
+```
+
+### Generated Structure
+
+The generator will create a complete Clean Architecture folder structure for your module:
+
+```text
+internal/modules/product/
+├── http/product_handler.go       # HTTP handlers and controller logic
+├── services/product_service.go   # Business logic and use cases
+├── repositories/product_repository.go # Data persistence layer (GORM)
+├── models/                       # Database entity models
+├── domain/                       # Core interfaces and entities
+├── dto/                          # Data Transfer Objects
+└── module.go                     # Dependency injection & route registration
+```
+
+> [!TIP]
+> After generating a module, remember to register it in `internal/bootstrap/bootstrap.go` and add its routes in `internal/delivery/http/router.go`.
 
 ---
 

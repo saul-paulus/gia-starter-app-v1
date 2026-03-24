@@ -13,3 +13,6 @@ migrate-new:
 
 migrate-status:
 	@$(MIGRATE_BIN) status -config=dbconfig.yml -env=development
+
+make-module:
+	@go run cmd/cli/main.go make:module $(name)
