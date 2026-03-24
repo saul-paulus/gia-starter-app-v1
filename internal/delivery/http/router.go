@@ -2,8 +2,8 @@ package http
 
 import (
 	_ "gia-starter-app-V1/docs"
-	"gia-starter-app-V1/internal/delivery/http/handler"
 	"gia-starter-app-V1/internal/delivery/http/middleware"
+	"gia-starter-app-V1/internal/modules/user/delivery/http/handler"
 	"gia-starter-app-V1/internal/shared/errors"
 	"gia-starter-app-V1/pkg/response"
 	"net/http"

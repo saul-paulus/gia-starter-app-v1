@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"gia-starter-app-V1/internal/domain/entity"
+	"gia-starter-app-V1/internal/modules/user/domain/entity"
 )
 
 type UserRepository interface {

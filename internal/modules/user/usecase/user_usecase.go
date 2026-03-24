@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
-	"gia-starter-app-V1/internal/domain/entity"
-	"gia-starter-app-V1/internal/domain/repository"
+	"gia-starter-app-V1/internal/modules/user/domain/entity"
+	"gia-starter-app-V1/internal/modules/user/domain/repository"
 )
 
 type UserUseCase interface {

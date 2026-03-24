@@ -1,4 +1,4 @@
-# GIA Starter App - Clean Architecture
+# **GIA Starter App - Clean Architecture**
 
 This project is a backend application built using the Go (Golang) programming language with the Gin Gonic framework, following the **Clean Architecture** (or Hexagonal Architecture) pattern. This structure is designed to decouple business logic from technical details (such as frameworks, databases, etc.) to enhance scalability and ease of testing.
 
@@ -26,24 +26,23 @@ gia-starter-app-V1/
 │       └── main.go     # Main entry point for the API service
 │
 ├── internal/           # Private application code (cannot be imported by other systems)
-│   ├── domain/         # Business Logic Core
-│   │   ├── entity/     # Business models/entities
-│   │   ├── repository/ # Interfaces for data access (Persistence Layer)
-│   │   └── service/    # Domain services
+│   ├── modules/        # Feature-based Modules (Self-contained)
+│   │   └── user/       # Example Module: User
+│   │       ├── delivery/      # Transport Layer (HTTP handlers)
+│   │       ├── domain/        # Business Logic Core (Entities & Repo Interfaces)
+│   │       ├── usecase/       # Application Business Rules
+│   │       └── infrastructure/ # Module-specific technical details (Persistence)
 │   │
-│   ├── usecase/        # Application Business Rules (Interactors)
+│   ├── infrastructure/ # Global technical details (Shared implementations)
+│   │   ├── database/    # Global Database connections
+│   │   ├── container/   # Dependency Injection Registry (Registry Pattern)
+│   │   ├── config/      # Global Application settings
+│   │   └── logger/      # Global Logging system
 │   │
-│   ├── delivery/        # Transport Layer (HTTP, gRPC, etc.)
-│   │   ├── http/
-│   │   │   ├── handler/    # HTTP Request handlers
-│   │   │   ├── middleware/ # HTTP Middleware (Auth, Logger, etc.)
-│   │   │   └── router.go   # API route definitions
-│   │
-│   ├── infrastructure/ # Technical details (External implementations)
-│   │   ├── database/    # Database connections and drivers
-│   │   ├── persistence/ # Concrete implementations of repository interfaces
-│   │   ├── config/      # Application settings
-│   │   └── logger/      # Logging system
+│   ├── delivery/       # Global Transport Layer (Shared middleware, router)
+│   │   └── http/
+│   │       ├── middleware/ # Shared HTTP Middleware
+│   │       └── router.go   # API route definitions
 │   │
 │   └── shared/         # Code used across various layers
 │       ├── util/       # Utility functions
@@ -67,12 +66,15 @@ gia-starter-app-V1/
 
 ## Architecture
 
-This application follows the principle of Separation of Concerns:
+This application follows the **Modular Clean Architecture** (Feature-Oriented) pattern. This approach groups related business logic into independent modules, making it highly scalable and maintainable.
 
-1.  **Domain Layer**: Contains business entities and repository interfaces. This layer has no dependencies on other layers.
-2.  **UseCase Layer**: Contains application-specific business logic. This layer orchestrates the flow of data to and from entities.
-3.  **Delivery Layer**: Handles external inputs (such as HTTP Requests) and returns outputs.
-4.  **Infrastructure Layer**: Implements technical details such as databases (PostgreSQL, MySQL), loggers, and other external services.
+1.  **Modularization**: Code is organized by **feature/domain** (e.g., `user`, `product`). Each module is a self-contained unit containing its own layers.
+2.  **Clean Layers inside Modules**:
+    - **Domain**: Business entities and repository interfaces.
+    - **UseCase**: Application-specific business logic and interactors.
+    - **Delivery**: Handles external inputs (HTTP handlers).
+    - **Infrastructure**: Module-specific technical details like persistence (Postgres, etc).
+3.  **Global Infrastructure**: Shared technical details like database connections, configurations, logging, and common utilities reside outside the modules to be reused across the application.
 
 ## Setup & Usage
 
@@ -154,26 +156,29 @@ Unlike version-only tools, `sql-migrate` stores the filename in the database (ta
 To add a new functional module (e.g., `Product`), follow these steps to ensure compliance with Clean Architecture:
 
 1.  **Database Migration**:
+
     ```bash
     make migrate-new name=create_products_table
     ```
+
     Define your schema in `migrations/xxxx_create_products_table.sql`.
 
 2.  **Domain Layer**:
-    - Create the entity in `internal/domain/entity/product.go`.
-    - Define the repository interface in `internal/domain/repository/product_repository.go`.
+    - Create the entity in `internal/modules/product/domain/entity/product.go`.
+    - Define the repository interface in `internal/modules/product/domain/repository/product_repository.go`.
 
-3.  **Infrastructure Layer**:
-    - Implement the repository in `internal/infrastructure/persistence/postgres/product_repository.go` using GORM.
+3.  **UseCase Layer**:
+    - Implement business logic in `internal/modules/product/usecase/product_usecase.go`.
 
-4.  **UseCase Layer**:
-    - Implement business logic in `internal/usecase/product_usecase.go`.
+4.  **Infrastructure Layer (Persistence)**:
+    - Implement the repository in `internal/modules/product/infrastructure/persistence/postgres/product_repository.go`.
 
 5.  **Delivery Layer (HTTP)**:
-    - Create the request handler in `internal/delivery/http/handler/product_handler.go`.
+    - Create the request handler in `internal/modules/product/delivery/http/handler/product_handler.go`.
 
 6.  **Dependency Injection**:
-    - Register the new repository and use case in `internal/infrastructure/container/registry.go`.
+    - Register the new module components in `internal/infrastructure/container/registry.go`.
+
     ```go
     // internal/infrastructure/container/registry.go
     func NewRegistry(db *gorm.DB) *Registry {
@@ -185,6 +190,7 @@ To add a new functional module (e.g., `Product`), follow these steps to ensure c
 
 7.  **Routing**:
     - Register the routes in `internal/delivery/http/router.go`.
+
     ```go
     // internal/delivery/http/router.go
     productHandler := handler.NewProductHandler(reg.ProductUseCase)

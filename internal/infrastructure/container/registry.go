@@ -1,8 +1,8 @@
 package container
 
 import (
-	"gia-starter-app-V1/internal/infrastructure/persistence/postgres"
-	"gia-starter-app-V1/internal/usecase"
+	"gia-starter-app-V1/internal/modules/user/infrastructure/persistence/postgres"
+	"gia-starter-app-V1/internal/modules/user/usecase"
 
 	"gorm.io/gorm"
 )
