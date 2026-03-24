@@ -149,6 +149,58 @@ This project uses `sql-migrate` for database schema management, which tracks mig
 
 Unlike version-only tools, `sql-migrate` stores the filename in the database (table `gorp_migrations`). This makes it easy to audit which specific migration scripts have been executed.
 
+### 🏗️ Adding a New Module
+
+To add a new functional module (e.g., `Product`), follow these steps to ensure compliance with Clean Architecture:
+
+1.  **Database Migration**:
+    ```bash
+    make migrate-new name=create_products_table
+    ```
+    Define your schema in `migrations/xxxx_create_products_table.sql`.
+
+2.  **Domain Layer**:
+    - Create the entity in `internal/domain/entity/product.go`.
+    - Define the repository interface in `internal/domain/repository/product_repository.go`.
+
+3.  **Infrastructure Layer**:
+    - Implement the repository in `internal/infrastructure/persistence/postgres/product_repository.go` using GORM.
+
+4.  **UseCase Layer**:
+    - Implement business logic in `internal/usecase/product_usecase.go`.
+
+5.  **Delivery Layer (HTTP)**:
+    - Create the request handler in `internal/delivery/http/handler/product_handler.go`.
+
+6.  **Dependency Injection**:
+    - Register the new repository and use case in `internal/infrastructure/container/registry.go`.
+    ```go
+    // internal/infrastructure/container/registry.go
+    func NewRegistry(db *gorm.DB) *Registry {
+        productRepo := postgres.NewProductRepository(db)
+        productUC := usecase.NewProductUseCase(productRepo)
+        // ...
+    }
+    ```
+
+7.  **Routing**:
+    - Register the routes in `internal/delivery/http/router.go`.
+    ```go
+    // internal/delivery/http/router.go
+    productHandler := handler.NewProductHandler(reg.ProductUseCase)
+    products := v1.Group("/products")
+    {
+        products.POST("", productHandler.CreateProduct)
+        // ...
+    }
+    ```
+
+8.  **API Documentation**:
+    - Add Swagger annotations to your handler methods and regenerate the docs:
+    ```bash
+    swag init -g cmd/api/main.go
+    ```
+
 ### 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
