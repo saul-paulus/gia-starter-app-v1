@@ -2,8 +2,6 @@ package http
 
 import (
 	_ "gia-starter-app-V1/docs"
-	"gia-starter-app-V1/internal/modules/user"
-	userHttp "gia-starter-app-V1/internal/modules/user/interface/http"
 	"gia-starter-app-V1/internal/shared/errors"
 	"gia-starter-app-V1/internal/shared/middleware"
 	"gia-starter-app-V1/internal/shared/response"
@@ -16,7 +14,7 @@ import (
 )
 
 // SetupRouter configures all routes, middleware, and special handlers for the application.
-func SetupRouter(r *gin.Engine, userModule *user.Module) {
+func SetupRouter(r *gin.Engine) {
 	// Handle Method Not Allowed
 	r.HandleMethodNotAllowed = true
 
@@ -45,8 +43,6 @@ func SetupRouter(r *gin.Engine, userModule *user.Module) {
 	// API Routes
 	v1 := r.Group("/api/v1")
 	{
-		// User Module Routes
-		userHttp.RegisterRoutes(v1, userModule.Handler)
 
 		// @Summary      Health check
 		// @Description  Check if the application is up and running
