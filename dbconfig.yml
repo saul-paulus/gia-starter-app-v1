@@ -1,5 +1,5 @@
 development:
   dialect: postgres
-  datasource: host=localhost user=root password=password02081998@ dbname=gin_app_db port=5432 sslmode=disable
+  datasource: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=${DB_SSLMODE}
   dir: migrations
   table: gorp_migrations

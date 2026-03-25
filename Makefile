@@ -3,7 +3,8 @@ MIGRATE_BIN=$(HOME)/go/bin/sql-migrate
 .PHONY: migrate-up migrate-down migrate-new migrate-status
 
 migrate-up:
-	@$(MIGRATE_BIN) up -config=dbconfig.yml -env=development
+	$(MIGRATE_BIN) up -config=dbconfig.yml -env=development
+
 
 migrate-down:
 	@$(MIGRATE_BIN) down -config=dbconfig.yml -env=development
@@ -16,3 +17,7 @@ migrate-status:
 
 make-module:
 	@go run cmd/cli/main.go make:module $(name)
+
+seed:
+	@go run cmd/seed/main.go
+

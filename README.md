@@ -152,6 +152,25 @@ The included `Makefile` simplifies common maintenance and development tasks.
 | `make migrate-down`         | Roll back the most recent migration.             |
 | `make migrate-new name=...` | Scaffold a new migration file with a timestamp.  |
 | `make make-module name=...` | Scaffold a new module using the CLI generator.   |
+| `make seed`                 | Seed the database with initial user data.         |
+
+---
+
+## 🌱 Seeding
+
+To populate your database with initial data (e.g., a default admin user), run:
+```bash
+make seed
+```
+
+This will:
+- Load configurations from `configs/config.yaml` and `.env`.
+- Check if the default user already exists.
+- Create a default user if it's missing.
+
+> [!NOTE]
+> Make sure your database migrations are up to date (`make migrate-up`) before running the seeder.
+
 
 ---
 
