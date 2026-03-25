@@ -1,2 +1,0 @@
-{"level":"INFO","ts":"2026-03-25T01:23:10.913+0700","caller":"logger/zap.go:48","msg":"Starting GIA Starter App..."}
-{"level":"INFO","ts":"2026-03-25T01:23:10.916+0700","caller":"logger/zap.go:48","msg":"Database connection established successfully"}
