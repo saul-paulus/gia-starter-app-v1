@@ -32,3 +32,10 @@ func NewAppError(status int, code string, message string) *AppError {
 		Message: message,
 	}
 }
+
+func (e AppError) ToResponse() map[string]any {
+	return map[string]any{
+		"code":    e.Code,
+		"message": e.Message,
+	}
+}

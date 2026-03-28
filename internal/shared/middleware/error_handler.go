@@ -4,12 +4,13 @@ import (
 	stdErrors "errors"
 	appErrors "gia-starter-app-V1/internal/shared/errors"
 	"gia-starter-app-V1/internal/shared/response"
-	"net/http"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
 // ErrorHandler is a middleware that catches errors set via c.Error().
+
 func ErrorHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
@@ -18,19 +19,22 @@ func ErrorHandler() gin.HandlerFunc {
 			return
 		}
 
+		// ambil error terakhir (bisa di-upgrade nanti)
 		err := c.Errors.Last().Err
+
 		var appErr *appErrors.AppError
 
 		if stdErrors.As(err, &appErr) {
-			res := response.ApiErrorResponse(appErr.Status, appErr.Message, gin.H{
-				"code": appErr.Code,
-			})
+			res := response.ApiErrorResponse(appErr)
 			c.AbortWithStatusJSON(appErr.Status, res)
-		} else {
-			res := response.ApiErrorResponse(http.StatusInternalServerError, "An unexpected error occurred", gin.H{
-				"code": "INTERNAL_SERVER_ERROR",
-			})
-			c.AbortWithStatusJSON(http.StatusInternalServerError, res)
+			return
 		}
+
+		// log error asli (penting untuk debugging)
+		log.Println("Unhandled error:", err)
+
+		// fallback ke internal error standar
+		res := response.ApiErrorResponse(appErrors.ErrInternal)
+		c.AbortWithStatusJSON(appErrors.ErrInternal.Status, res)
 	}
 }

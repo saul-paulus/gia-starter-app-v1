@@ -2,6 +2,7 @@ package http
 
 import (
 	_ "gia-starter-app-V1/docs"
+	"gia-starter-app-V1/internal/modules/users"
 	"gia-starter-app-V1/internal/shared/errors"
 	"gia-starter-app-V1/internal/shared/middleware"
 	"gia-starter-app-V1/internal/shared/response"
@@ -11,10 +12,11 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // SetupRouter configures all routes, middleware, and special handlers for the application.
-func SetupRouter(r *gin.Engine) {
+func SetupRouter(r *gin.Engine, db *gorm.DB) {
 	// Handle Method Not Allowed
 	r.HandleMethodNotAllowed = true
 
@@ -23,27 +25,25 @@ func SetupRouter(r *gin.Engine) {
 
 	// Handle No Route (404)
 	r.NoRoute(func(c *gin.Context) {
-		res := response.ApiErrorResponse(http.StatusNotFound, "Resource not found", gin.H{
-			"code": "NOT_FOUND",
-		})
+		res := response.ApiErrorResponse(errors.ErrNotFound)
 		c.JSON(http.StatusNotFound, res)
 	})
 
 	// Handle No Method (405)
 	r.NoMethod(func(c *gin.Context) {
-		res := response.ApiErrorResponse(http.StatusMethodNotAllowed, "Method not allowed", gin.H{
-			"code": "METHOD_NOT_ALLOWED",
-		})
+		res := response.ApiErrorResponse(errors.ErrBadRequest)
 		c.JSON(http.StatusMethodNotAllowed, res)
 	})
 
 	// Global Middleware
 	r.Use(middleware.ErrorHandler())
 
+	// Initialize Modules
+	usersModule := users.NewModule(db)
+
 	// API Routes
 	v1 := r.Group("/api/v1")
 	{
-
 		// @Summary      Health check
 		// @Description  Check if the application is up and running
 		// @Tags         system
@@ -67,5 +67,8 @@ func SetupRouter(r *gin.Engine) {
 			// Simulating a "Not Found" error
 			_ = c.Error(errors.ErrNotFound)
 		})
+
+		// Register Users Module routes
+		usersModule.Register(v1)
 	}
 }

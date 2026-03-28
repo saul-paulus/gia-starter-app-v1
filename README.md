@@ -1,11 +1,11 @@
-# **GIA Starter App - Clean Architecture**
+# **GIA Starter App — Clean Architecture**
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Maintenance](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](https://github.com/saul-paulus/gia-starter-app-v1)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/saul-paulus/gia-starter-app-v1?style=flat-square&color=00ADD8&logo=go)](https://golang.org/)
 [![Gin Framework](https://img.shields.io/badge/Framework-Gin-0081CB?style=flat-square&logo=go)](https://gin-gonic.com/)
 
-A professional-grade backend starter kit built with **Golang 1.25** and the **Gin Gonic** framework. This project follows the **Modular Clean Architecture** (Hexagonal Architecture) pattern, designed for high scalability, maintainability, and testability.
+A professional-grade backend starter kit built with **Golang** and **Gin**. Follows **Modular Clean Architecture** — designed for scalability, maintainability, and testability from day one.
 
 ---
 
@@ -16,27 +16,29 @@ A professional-grade backend starter kit built with **Golang 1.25** and the **Gi
 - [🏗️ Architecture Overview](#️-architecture-overview)
 - [📁 Project Structure](#-project-structure)
 - [⚙️ Getting Started](#️-getting-started)
-- [🔌 API Documentation](#-api-documentation)
-- [🧪 Testing](#-testing)
 - [📜 Makefile Commands](#-makefile-commands)
-- [🛠️ CLI Generator](#️-cli-generator)
-- [🐳 Docker](#-docker)
-- [🤝 Contributing](#-contributing)
+- [🌱 Seeding](#-seeding)
+- [🛠️ CLI Module Generator](#️-cli-module-generator)
+- [📚 API Documentation](#-api-documentation)
+- [🧪 Testing](#-testing)
 - [📄 License](#-license)
 
 ---
 
 ## ✨ Features
 
-- **Modular Clean Architecture**: Domain-driven design with clear separation of concerns.
-- **Dependency Injection**: Decoupled components for easier testing and maintenance.
-- **RESTful API**: Built with the high-performance Gin framework.
-- **Database Integration**: Robust GORM setup with PostgreSQL support.
-- **Automated Migrations**: Versioned schema changes using `sql-migrate`.
-- **Swagger Documentation**: Self-documenting API using `swag`.
-- **Structured Logging**: High-performance logging with Uber's `zap`.
-- **Configuration Management**: Flexible config via Viper (`.env`, YAML).
-- **Live Reload**: Faster development cycles with `Air`.
+- **Modular Clean Architecture** — Domain-driven design with clear separation of concerns
+- **Dependency Injection** — Decoupled components for easier testing and maintenance
+- **RESTful API** — Built with the high-performance Gin framework
+- **Database Integration** — Robust GORM setup with PostgreSQL support
+- **Automated Migrations** — Versioned schema changes using `sql-migrate`
+- **Swagger Documentation** — Self-documenting API using `swag`
+- **Structured Logging** — High-performance logging with Uber's `zap`
+- **Configuration Management** — Flexible config via Viper (`.env` + YAML)
+- **Live Reload** — Faster development cycles with `Air`
+- **CLI Module Generator** — Artisan-style scaffolding for new modules
+- **Database Seeder** — Automated initial data population
+- **Unit Testing** — Repository and service layer tests with `testify` + `sqlmock`
 
 ---
 
@@ -53,164 +55,223 @@ A professional-grade backend starter kit built with **Golang 1.25** and the **Gi
 | **Logging**    | [Uber Zap](https://github.com/uber-go/zap)                 | Fast, structured logging              |
 | **Docs**       | [Swagger](https://github.com/swaggo/swag)                  | Automatic API documentation           |
 | **Validation** | [Go Validator](https://github.com/go-playground/validator) | Request data validation               |
+| **Testing**    | [Testify](https://github.com/stretchr/testify) + [sqlmock](https://github.com/DATA-DOG/go-sqlmock) | Unit testing & DB mocking |
 | **Dev Tool**   | [Air](https://github.com/cosmtrek/air)                     | Live reloading during development     |
 
 ---
 
-## 🛠️ Getting Started
+## 🏗️ Architecture Overview
+
+This kit follows **Clean Architecture** principles — business logic stays isolated from frameworks, databases, and transport layers.
+
+### Dependency Flow
+
+```mermaid
+graph TD
+    Delivery["Delivery Layer (HTTP Handlers)"] --> Service["Service Layer (Business Logic)"]
+    Service --> Repository["Repository Layer (Data Access)"]
+    Repository --> DB["Infrastructure (GORM / PostgreSQL)"]
+    Domain["Domain (Entities & Interfaces)"] -.-> Service
+    Domain -.-> Repository
+    Shared["Shared Kernel (Errors, Response, Middleware)"] -.-> Delivery
+    Shared -.-> Service
+```
+
+### Layer Responsibilities
+
+| Layer | Directory | Responsibility |
+|:------|:----------|:---------------|
+| **HTTP / Delivery** | `http/` | Bind request, validate, call service, return response |
+| **Service** | `services/` | Business rules, orchestration, error mapping |
+| **Repository** | `repositories/` | Database queries via GORM |
+| **Domain** | `domain/` | Entity structs (pure Go, no dependencies) |
+| **DTO** | `dto/` | Request/Response data transfer objects |
+
+---
+
+## 📁 Project Structure
+
+```text
+gia-starter-app-V1/
+│
+├── cmd/                          # Application entry points
+│   ├── api/main.go               # HTTP server entry point
+│   ├── cli/main.go               # CLI module generator entry point
+│   └── seed/main.go              # Database seeder entry point
+│
+├── internal/                     # Private application code
+│   ├── bootstrap/                # App initialization & wiring
+│   │   └── bootstrap.go
+│   │
+│   ├── modules/                  # Feature modules (domain-driven)
+│   │   ├── users/                # Users module
+│   │   │   ├── domain/           # Entity: Users struct
+│   │   │   ├── dto/              # Request DTOs with validation tags
+│   │   │   ├── http/             # HTTP handler (CreateUser, Index)
+│   │   │   ├── repositories/     # GORM queries
+│   │   │   │   └── mocks/        # Mock implementations for unit tests
+│   │   │   ├── services/         # Business logic (CreateUser)
+│   │   │   └── module.go         # DI wiring: repo → service → handler
+│   │   │
+│   │   └── auth/                 # Auth module (in progress)
+│   │       ├── domain/
+│   │       ├── dto/
+│   │       ├── http/
+│   │       ├── repositories/
+│   │       ├── services/
+│   │       └── module.go
+│   │
+│   ├── delivery/http/            # Global router & middleware registration
+│   │   └── router.go
+│   │
+│   ├── infrastructure/           # Technical drivers
+│   │   ├── config/config.go      # Viper config loader
+│   │   ├── database/postgres.go  # GORM + PostgreSQL connection
+│   │   └── logger/zap.go         # Uber Zap logger setup
+│   │
+│   ├── cli/                      # CLI module generator logic
+│   │   ├── make_module.go        # Core scaffolding logic
+│   │   └── *_template.go         # Handler / service / repo templates
+│   │
+│   ├── seeder/                   # Database seeders
+│   │   └── user_seeder.go
+│   │
+│   └── shared/                   # Cross-cutting concerns
+│       ├── domain/model/         # Base model (ID, timestamps)
+│       ├── errors/errors.go      # AppError & predefined errors
+│       ├── middleware/           # Error handler middleware
+│       ├── response/response.go  # Standardized API response helpers
+│       ├── constant/             # Application-wide constants (reserved)
+│       └── util/                 # Utility helpers (reserved)
+│
+├── configs/                      # Configuration files (YAML)
+├── migrations/                   # SQL migration scripts (sql-migrate)
+├── pkg/                          # Public shared libraries
+│   ├── pagination/               # Pagination helpers
+│   └── validator/                # Custom validation rules
+├── scripts/                      # Shell scripts for CI/CD (reserved)
+├── storage/logs/                 # Application log files
+├── docs/                         # Auto-generated Swagger files
+└── test/                         # Integration / e2e tests (reserved)
+```
+
+---
+
+## ⚙️ Getting Started
 
 ### Prerequisites
 
-- **Go 1.25+** installed
+- **Go 1.21+** installed
 - **PostgreSQL** instance running
-- **sql-migrate** installed: `go install github.com/rubenv/sql-migrate/...@latest`
-- **swag** installed: `go install github.com/swaggo/swag/cmd/swag@latest`
+- **sql-migrate** installed:
+  ```bash
+  go install github.com/rubenv/sql-migrate/...@latest
+  ```
+- **swag** installed:
+  ```bash
+  go install github.com/swaggo/swag/cmd/swag@latest
+  ```
 
-### Environment Configuration
-
-1. **Setup Environment Variables**:
-   Copy the example environment file and update the values to match your setup.
-   ```bash
-   cp .env.example .env
-   ```
-
-2. **Configure Database**:
-   Ensure the database credentials in `.env` are correct. By default, the app looks for a database named `gin_app_db`.
-
-### Installation & Run
+### Setup
 
 1. **Clone & Install Dependencies**
    ```bash
+   git clone https://github.com/saul-paulus/gia-starter-app-v1.git
+   cd gia-starter-app-v1
    go mod tidy
    ```
 
-2. **Run Migrations**
+2. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env — set DB_HOST, DB_USER, DB_PASSWORD, DB_NAME
+   ```
+
+3. **Run Migrations**
    ```bash
    make migrate-up
    ```
 
-3. **Run Application**
+4. **Seed Initial Data** *(optional)*
    ```bash
+   make seed
+   ```
+
+5. **Run the Application**
+   ```bash
+   # Standard
    go run cmd/api/main.go
-   # OR with hot-reload (recommended)
+
+   # With hot-reload (recommended for development)
    air
    ```
 
----
-
-## 📂 Project Structure
-
-```text
-gia-starter-app-V1/
-├── cmd/                # Application entry points
-│   └── api/main.go     # Minimal entry point (calls bootstrap)
-├── internal/           # Private application code (non-exportable)
-│   ├── bootstrap/      # App initialization & Module registration
-│   ├── modules/        # Domain-specific feature modules
-│   │   └── user/       # Example: User module with Domain, Usecase, Delivery
-│   ├── delivery/http/  # Global router, middleware, and transport layers
-│   ├── shared/         # Utilities, global errors, and common models
-│   └── infrastructure/ # Technical drivers (DB, Logger, Viper)
-├── configs/            # Configuration files (YAML, JSON)
-├── migrations/         # SQL migration scripts for database versioning
-├── pkg/                # Public shared libraries (exportable)
-├── storage/            # Local storage for logs and temp files
-└── docs/               # Auto-generated Swagger API documentation
-```
-
----
-
-## 🏗️ Architecture Design
-
-This kit follows **Clean Architecture** principles, ensuring that business logic remains isolated from external dependencies like frameworks or databases.
-
-### Core Principles
-
-1. **Independence**: The business logic is not coupled to any specific framework or library.
-2. **Layered Structure**: Dependency flow points inward (Infrastructure/Delivery -> Usecase -> Domain).
-3. **Modular Dependency Injection**: Each module manages its own context and dependencies via dedicated initializers.
-
-```mermaid
-graph TD
-    Delivery[Delivery Layer: HTTP Handlers] --> Usecase[Usecase Layer: Business Logic]
-    Usecase --> Domain[Domain Layer: Entities & Interfaces]
-    Infrastructure[Infrastructure Layer: GORM/Postgres] --> Domain
-    Shared[Shared Kernel: Errors, Responses] -.-> Delivery
-    Shared -.-> Usecase
-```
+The server starts at **`http://localhost:8081`**.
 
 ---
 
 ## 📜 Makefile Commands
 
-The included `Makefile` simplifies common maintenance and development tasks.
-
 | Command                     | Description                                      |
 | :-------------------------- | :----------------------------------------------- |
-| `make migrate-status`       | Check the current status of database migrations. |
-| `make migrate-up`           | Apply all available 'up' migrations.             |
-| `make migrate-down`         | Roll back the most recent migration.             |
-| `make migrate-new name=...` | Scaffold a new migration file with a timestamp.  |
-| `make make-module name=...` | Scaffold a new module using the CLI generator.   |
-| `make seed`                 | Seed the database with initial user data.         |
+| `make migrate-status`       | Show current migration status                    |
+| `make migrate-up`           | Apply all pending migrations                     |
+| `make migrate-down`         | Roll back the most recent migration              |
+| `make migrate-new name=...` | Create a new timestamped migration file          |
+| `make make-module name=...` | Scaffold a new module (Clean Architecture)       |
+| `make seed`                 | Seed the database with default data              |
 
 ---
 
 ## 🌱 Seeding
 
-To populate your database with initial data (e.g., a default admin user), run:
+Populate your database with initial data (e.g., default admin user):
+
 ```bash
 make seed
 ```
 
 This will:
-- Load configurations from `configs/config.yaml` and `.env`.
-- Check if the default user already exists.
-- Create a default user if it's missing.
+- Load configurations from `configs/config.yaml` and `.env`
+- Check if the default user already exists
+- Create a default user if not present
 
 > [!NOTE]
-> Make sure your database migrations are up to date (`make migrate-up`) before running the seeder.
-
+> Run `make migrate-up` **before** running the seeder to ensure the schema is up to date.
 
 ---
 
-## 🛠️ CLI Module Generator (Artisan Style)
+## 🛠️ CLI Module Generator
 
-This starter kit includes a powerful CLI tool to scaffold new modules quickly, ensuring architectural consistency across your project.
+Scaffold a new module with a single command:
 
-### Usage
-
-To generate a new module (e.g., `product`), run:
 ```bash
 make make-module name=product
 ```
 
-### Generated Structure
-
-The generator will create a complete Clean Architecture folder structure for your module:
+This generates a full Clean Architecture structure:
 
 ```text
 internal/modules/product/
-├── http/product_handler.go       # HTTP handlers and controller logic
-├── services/product_service.go   # Business logic and use cases
-├── repositories/product_repository.go # Data persistence layer (GORM)
-├── models/                       # Database entity models
-├── domain/                       # Core interfaces and entities
-├── dto/                          # Data Transfer Objects
-└── module.go                     # Dependency injection & route registration
+├── http/product_handler.go           # HTTP handler
+├── services/product_service.go       # Business logic
+├── repositories/product_repository.go # Data access (GORM)
+├── domain/                           # Entity structs
+├── dto/                              # Request DTOs
+└── module.go                         # DI wiring & route registration
 ```
 
 > [!TIP]
-> After generating a module, remember to register it in `internal/bootstrap/bootstrap.go` and add its routes in `internal/delivery/http/router.go`.
+> After generating a module, register it in `internal/delivery/http/router.go` by initializing `NewModule(db)` and calling `.Register(v1)`.
 
 ---
 
 ## 📚 API Documentation
 
-Once the application is running, you can access the interactive Swagger UI at:
+Interactive Swagger UI is available at:
 **[http://localhost:8081/swagger/index.html](http://localhost:8081/swagger/index.html)**
 
-To update documentation after adding new endpoints:
+To regenerate docs after adding new annotated endpoints:
 ```bash
 swag init -g cmd/api/main.go
 ```
@@ -219,9 +280,46 @@ swag init -g cmd/api/main.go
 
 ## 🧪 Testing
 
-Run unit tests across all modules:
+### Run All Tests
 ```bash
-go test ./...
+go test ./... -v
+```
+
+### Run Tests Per Layer
+```bash
+# Service layer only
+go test ./internal/modules/users/services/... -v
+
+# Repository layer only
+go test ./internal/modules/users/repositories/... -v
+
+# All users module tests
+go test ./internal/modules/users/... -v
+```
+
+### Run with Coverage
+```bash
+go test ./internal/modules/users/... -cover
+```
+
+Expected coverage:
+- **Repository**: `100%`
+- **Service**: `~92%`
+
+### Test Structure
+
+Each module follows this testing convention:
+
+```text
+modules/users/
+├── services/
+│   ├── user_service.go
+│   └── user_service_test.go   # Table-driven unit tests (mock repo)
+└── repositories/
+    ├── user_repository.go
+    ├── user_repository_test.go # sqlmock + GORM integration tests
+    └── mocks/
+        └── user_repository_mock.go  # Manual mock (nil-safe)
 ```
 
 ---

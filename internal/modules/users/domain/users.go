@@ -9,7 +9,7 @@ type Users struct {
 	Password string `json:"-"` // tidak dikirim ke response
 	RoleID   int    `gorm:"column:id_role" json:"role_id"`
 
-	IsActive bool   `json:"is_active"`
+	IsActive bool `json:"is_active"`
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`

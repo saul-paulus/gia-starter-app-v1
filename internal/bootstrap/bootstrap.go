@@ -26,16 +26,10 @@ func InitApp() {
 		logger.Fatal("Database connection failed")
 	}
 
-	// Initialize Modules
-	_ = db
-	// authModule := auth.Init(db) // Placeholder for future auth module
-
 	router := gin.Default()
 
-	// Setup Main Router (aggregates module routes)
-	http.SetupRouter(router)
+	// Setup Main Router (aggregates module routes) + pass db untuk module wiring
+	http.SetupRouter(router, db)
 
-	// In the future, you can add more modules to SetupRouter:
-	// http.SetupRouter(router, userModule, authModule)
 	router.Run(":8081")
 }
