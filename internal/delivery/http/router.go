@@ -45,8 +45,8 @@ func SetupRouter(r *gin.Engine, db *gorm.DB) {
 	v1 := r.Group("/api/v1")
 	{
 		// @Summary      Health check
-		// @Description  Check if the application is up and running
-		// @Tags         system
+		// @Description  Memeriksa apakah aplikasi sedang berjalan dengan normal
+		// @Tags         System
 		// @Produce      json
 		// @Success      200  {object}  response.Response
 		// @Router       /health [get]
@@ -57,18 +57,7 @@ func SetupRouter(r *gin.Engine, db *gorm.DB) {
 			c.JSON(http.StatusOK, res)
 		})
 
-		// @Summary      Error demo
-		// @Description  Endpoint to simulate an error handled by middleware
-		// @Tags         system
-		// @Produce      json
-		// @Success      404  {object}  response.Response
-		// @Router       /error [get]
-		v1.GET("/error", func(c *gin.Context) {
-			// Simulating a "Not Found" error
-			_ = c.Error(errors.ErrNotFound)
-		})
-
-		// Register Users Module routes
+		// Register Users Module routes: GET /users, POST /users
 		usersModule.Register(v1)
 	}
 }

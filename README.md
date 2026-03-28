@@ -44,19 +44,19 @@ A professional-grade backend starter kit built with **Golang** and **Gin**. Foll
 
 ## 🚀 Tech Stack
 
-| Component      | Technology                                                 | Purpose                               |
-| :------------- | :--------------------------------------------------------- | :------------------------------------ |
-| **Language**   | [Go 1.25+](https://golang.org/)                            | Core programming language             |
-| **Framework**  | [Gin Gonic](https://gin-gonic.com/)                        | High-performance HTTP routing         |
-| **ORM**        | [GORM](https://gorm.io/)                                   | Database interaction and mapping      |
-| **Database**   | [PostgreSQL](https://www.postgresql.org/)                  | Relational data persistence           |
-| **Migration**  | [sql-migrate](https://github.com/rubenv/sql-migrate)       | Database schema version control       |
-| **Config**     | [Viper](https://github.com/spf13/viper)                    | Multi-format configuration management |
-| **Logging**    | [Uber Zap](https://github.com/uber-go/zap)                 | Fast, structured logging              |
-| **Docs**       | [Swagger](https://github.com/swaggo/swag)                  | Automatic API documentation           |
-| **Validation** | [Go Validator](https://github.com/go-playground/validator) | Request data validation               |
-| **Testing**    | [Testify](https://github.com/stretchr/testify) + [sqlmock](https://github.com/DATA-DOG/go-sqlmock) | Unit testing & DB mocking |
-| **Dev Tool**   | [Air](https://github.com/cosmtrek/air)                     | Live reloading during development     |
+| Component      | Technology                                                                                         | Purpose                               |
+| :------------- | :------------------------------------------------------------------------------------------------- | :------------------------------------ |
+| **Language**   | [Go 1.25+](https://golang.org/)                                                                    | Core programming language             |
+| **Framework**  | [Gin Gonic](https://gin-gonic.com/)                                                                | High-performance HTTP routing         |
+| **ORM**        | [GORM](https://gorm.io/)                                                                           | Database interaction and mapping      |
+| **Database**   | [PostgreSQL](https://www.postgresql.org/)                                                          | Relational data persistence           |
+| **Migration**  | [sql-migrate](https://github.com/rubenv/sql-migrate)                                               | Database schema version control       |
+| **Config**     | [Viper](https://github.com/spf13/viper)                                                            | Multi-format configuration management |
+| **Logging**    | [Uber Zap](https://github.com/uber-go/zap)                                                         | Fast, structured logging              |
+| **Docs**       | [Swagger](https://github.com/swaggo/swag)                                                          | Automatic API documentation           |
+| **Validation** | [Go Validator](https://github.com/go-playground/validator)                                         | Request data validation               |
+| **Testing**    | [Testify](https://github.com/stretchr/testify) + [sqlmock](https://github.com/DATA-DOG/go-sqlmock) | Unit testing & DB mocking             |
+| **Dev Tool**   | [Air](https://github.com/cosmtrek/air)                                                             | Live reloading during development     |
 
 ---
 
@@ -79,13 +79,13 @@ graph TD
 
 ### Layer Responsibilities
 
-| Layer | Directory | Responsibility |
-|:------|:----------|:---------------|
-| **HTTP / Delivery** | `http/` | Bind request, validate, call service, return response |
-| **Service** | `services/` | Business rules, orchestration, error mapping |
-| **Repository** | `repositories/` | Database queries via GORM |
-| **Domain** | `domain/` | Entity structs (pure Go, no dependencies) |
-| **DTO** | `dto/` | Request/Response data transfer objects |
+| Layer               | Directory       | Responsibility                                        |
+| :------------------ | :-------------- | :---------------------------------------------------- |
+| **HTTP / Delivery** | `http/`         | Bind request, validate, call service, return response |
+| **Service**         | `services/`     | Business rules, orchestration, error mapping          |
+| **Repository**      | `repositories/` | Database queries via GORM                             |
+| **Domain**          | `domain/`       | Entity structs (pure Go, no dependencies)             |
+| **DTO**             | `dto/`          | Request/Response data transfer objects                |
 
 ---
 
@@ -175,6 +175,7 @@ gia-starter-app-V1/
 ### Setup
 
 1. **Clone & Install Dependencies**
+
    ```bash
    git clone https://github.com/saul-paulus/gia-starter-app-v1.git
    cd gia-starter-app-v1
@@ -182,22 +183,26 @@ gia-starter-app-V1/
    ```
 
 2. **Configure Environment**
+
    ```bash
    cp .env.example .env
    # Edit .env — set DB_HOST, DB_USER, DB_PASSWORD, DB_NAME
    ```
 
 3. **Run Migrations**
+
    ```bash
    make migrate-up
    ```
 
-4. **Seed Initial Data** *(optional)*
+4. **Seed Initial Data** _(optional)_
+
    ```bash
    make seed
    ```
 
 5. **Run the Application**
+
    ```bash
    # Standard
    go run cmd/api/main.go
@@ -212,14 +217,14 @@ The server starts at **`http://localhost:8081`**.
 
 ## 📜 Makefile Commands
 
-| Command                     | Description                                      |
-| :-------------------------- | :----------------------------------------------- |
-| `make migrate-status`       | Show current migration status                    |
-| `make migrate-up`           | Apply all pending migrations                     |
-| `make migrate-down`         | Roll back the most recent migration              |
-| `make migrate-new name=...` | Create a new timestamped migration file          |
-| `make make-module name=...` | Scaffold a new module (Clean Architecture)       |
-| `make seed`                 | Seed the database with default data              |
+| Command                     | Description                                |
+| :-------------------------- | :----------------------------------------- |
+| `make migrate-status`       | Show current migration status              |
+| `make migrate-up`           | Apply all pending migrations               |
+| `make migrate-down`         | Roll back the most recent migration        |
+| `make migrate-new name=...` | Create a new timestamped migration file    |
+| `make make-module name=...` | Scaffold a new module (Clean Architecture) |
+| `make seed`                 | Seed the database with default data        |
 
 ---
 
@@ -232,6 +237,7 @@ make seed
 ```
 
 This will:
+
 - Load configurations from `configs/config.yaml` and `.env`
 - Check if the default user already exists
 - Create a default user if not present
@@ -268,24 +274,139 @@ internal/modules/product/
 
 ## 📚 API Documentation
 
-Interactive Swagger UI is available at:
+### Swagger UI
+
+Interactive Swagger UI tersedia di:
 **[http://localhost:8081/swagger/index.html](http://localhost:8081/swagger/index.html)**
 
-To regenerate docs after adding new annotated endpoints:
+Generate atau update dokumentasi setelah menambahkan endpoint baru:
+
 ```bash
-swag init -g cmd/api/main.go
+~/go/bin/swag init -g cmd/api/main.go --output docs
 ```
+
+> [!TIP]
+> Install `swag` sekali dengan: `go install github.com/swaggo/swag/cmd/swag@latest`
+
+---
+
+### Base URL & Response Format
+
+**Base URL:** `http://localhost:8081/api/v1`
+
+Semua endpoint menggunakan format response yang konsisten:
+
+```json
+// ✅ Success
+{
+  "success": true,
+  "response_code": 200,
+  "message": "...",
+  "data": {}
+}
+
+// ❌ Error
+{
+  "success": false,
+  "response_code": 400,
+  "message": "...",
+  "error": { "code": "ERROR_CODE" }
+}
+```
+
+---
+
+### API Reference
+
+#### 🟢 System
+
+| Method | Endpoint         | Deskripsi                      |
+| :----: | :--------------- | :----------------------------- |
+| `GET`  | `/api/v1/health` | Health check — status aplikasi |
+
+**`GET /api/v1/health`**
+
+```json
+// 200 OK
+{
+  "success": true,
+  "response_code": 200,
+  "message": "Health check OK",
+  "data": { "status": "UP OK" }
+}
+```
+
+---
+
+#### 👤 Users
+
+| Method | Endpoint        | Deskripsi          |
+| :----: | :-------------- | :----------------- |
+| `GET`  | `/api/v1/users` | Index users module |
+| `POST` | `/api/v1/users` | Buat user baru     |
+
+**`POST /api/v1/users`** — Create User
+
+Request Body:
+
+```json
+{
+  "username": "john_doe",
+  "email": "john@example.com",
+  "role_id": 2,
+  "password": "secretpassword"
+}
+```
+
+| Field      | Type      | Validasi                        |
+| :--------- | :-------- | :------------------------------ |
+| `username` | `string`  | required, min=3, max=100        |
+| `email`    | `string`  | required, format email, max=254 |
+| `role_id`  | `integer` | required, 1=admin, 2=user       |
+| `password` | `string`  | required, min=8, max=255        |
+
+Responses:
+
+```json
+// 201 Created
+{ "success": true, "response_code": 201, "message": "User created successfully" }
+
+// 400 — validasi gagal
+{ "success": false, "response_code": 400, "message": "...", "error": { "code": "VALIDATION_ERROR" } }
+
+// 400 — email sudah terdaftar
+{ "success": false, "response_code": 400, "message": "Email already registered", "error": { "code": "EMAIL_EXISTS" } }
+
+// 500 — internal error
+{ "success": false, "response_code": 500, "message": "an unexpected error occurred", "error": { "code": "INTERNAL" } }
+```
+
+---
+
+### Error Codes
+
+| Code               | HTTP | Deskripsi                 |
+| :----------------- | :--- | :------------------------ |
+| `VALIDATION_ERROR` | 400  | Input request tidak valid |
+| `EMAIL_EXISTS`     | 400  | Email sudah terdaftar     |
+| `BAD_REQUEST`      | 400  | Request tidak valid       |
+| `UNAUTHORIZED`     | 401  | Authentication diperlukan |
+| `FORBIDDEN`        | 403  | Akses ditolak             |
+| `NOT_FOUND`        | 404  | Resource tidak ditemukan  |
+| `INTERNAL`         | 500  | Internal server error     |
 
 ---
 
 ## 🧪 Testing
 
 ### Run All Tests
+
 ```bash
 go test ./... -v
 ```
 
 ### Run Tests Per Layer
+
 ```bash
 # Service layer only
 go test ./internal/modules/users/services/... -v
@@ -298,11 +419,13 @@ go test ./internal/modules/users/... -v
 ```
 
 ### Run with Coverage
+
 ```bash
 go test ./internal/modules/users/... -cover
 ```
 
 Expected coverage:
+
 - **Repository**: `100%`
 - **Service**: `~92%`
 

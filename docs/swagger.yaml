@@ -1,4 +1,160 @@
+basePath: /api/v1
+definitions:
+  dto.CreateUser:
+    description: Request body for POST /users
+    properties:
+      email:
+        description: |-
+          Email must be a valid address and will be used as a unique identifier
+          example: john@example.com
+        example: john@example.com
+        maxLength: 254
+        type: string
+      password:
+        description: |-
+          Password must be at least 8 characters and will be hashed with bcrypt
+          example: secretpassword
+        example: secretpassword
+        maxLength: 255
+        minLength: 8
+        type: string
+      role_id:
+        description: |-
+          RoleID is the role identifier (1=admin, 2=user)
+          example: 2
+        example: 2
+        maximum: 2
+        minimum: 1
+        type: integer
+      username:
+        description: |-
+          Username must be between 3 and 100 characters
+          example: john_doe
+        example: john_doe
+        maxLength: 100
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - role_id
+    - username
+    type: object
+  response.Meta:
+    properties:
+      page:
+        type: integer
+      per_page:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      error: {}
+      message:
+        type: string
+      meta:
+        $ref: '#/definitions/response.Meta'
+      response_code:
+        type: integer
+      success:
+        type: boolean
+    type: object
+host: localhost:8081
 info:
-  contact: {}
-paths: {}
+  contact:
+    name: Saul Paulus
+    url: https://github.com/saul-paulus/gia-starter-app-v1
+  description: A professional-grade backend starter kit built with Golang and Gin,
+    following Modular Clean Architecture.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: GIA Starter App API
+  version: "1.0"
+paths:
+  /auth:
+    get:
+      description: Returns a welcome message from the auth module
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Auth index
+      tags:
+      - Auth
+  /users:
+    get:
+      description: Returns a welcome message from the users module
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user account. Email must be unique and the password
+        will be hashed using bcrypt before storage.
+      parameters:
+      - description: Create user request payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Validation error or email already registered
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                error:
+                  additionalProperties:
+                    type: string
+                  type: object
+              type: object
+        "500":
+          description: Internal server error
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                error:
+                  additionalProperties:
+                    type: string
+                  type: object
+              type: object
+      summary: Create a new user
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and your JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
